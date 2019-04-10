@@ -1,0 +1,123 @@
+package Vista;
+
+
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+import Modelo.Ficha;
+
+
+
+public class Tablero extends JFrame {
+	
+	JButton[][] Base = new JButton[8][8];
+	
+	Modelo.Tablero t=new Modelo.Tablero();
+		public Tablero() throws MalformedURLException { //creamos un array simple de botones sin formato
+			
+			super("DAMAS");
+			Ficha[][] fich=t.GetFichas();
+			setLayout(new GridLayout(8,8));
+			setSize(600,600);
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			for(int x=0;x<8;x++) {
+				for(int y=0;y<8;y++) {
+					Base[x][y]=new JButton();
+					add(Base[x][y]);
+				}
+				
+			}
+			crear();
+			setLocationRelativeTo(null);
+			setVisible(true);
+}		
+
+		public static void editar(JButton boton,int x, int y) throws MalformedURLException {//editamos los botones con las cordenadas de las que disponemos y el boton
+			ImageIcon gatete=new ImageIcon("imagenes\\modgato.png");
+			ImageIcon perrete=new ImageIcon("imagenes\\modperro.png");
+			ImageIcon perreted=new ImageIcon("imagenes\\modperrod.png");
+			ImageIcon gateted=new ImageIcon("imagenes\\modgatod.png");
+			boton.setToolTipText(Integer.toString(x)+" "+Integer.toString(y)); //metemos en tool tip coordenadas
+			boton.setActionCommand(Integer.toString(Modelo.Tablero.GetTipo(x,y))); //tipo de ficha que es 
+			int c=Modelo.Tablero.GetTipo(x, y);
+			if(c==1) {
+			boton.setIcon(gatete);
+			boton.setBackground(Color.YELLOW);
+			}
+			if(c==2) {
+			boton.setBackground(Color.YELLOW);
+			boton.setIcon(perrete);
+			}
+			if(c==4) {
+				boton.setBackground(Color.YELLOW);
+				boton.setIcon(perreted);
+			}
+			if(c==3) {
+				boton.setBackground(Color.YELLOW);
+				boton.setIcon(gateted);
+				
+			}
+			if(c==0&&(x+y)%2==0) {
+				boton.setBackground(Color.YELLOW);
+			}
+			if(c==0&&(x+y)%2!=0) {
+				boton.setBackground(Color.PINK);
+			}
+		}
+		
+		public int getColor(JButton boton) {
+			return Integer.parseInt(boton.getActionCommand());
+		}
+		
+		public static  int getX(JButton boton) {
+			String[] datos;
+			datos=boton.getToolTipText().split(" ");
+			return Integer.parseInt(datos[0]);
+		}
+		
+		public static int getY(JButton boton) {
+			String[] datos;
+			datos=boton.getToolTipText().split(" ");
+			 return Integer.parseInt(datos[1]);
+		}
+		
+		public boolean esPar(int n) {
+			if(n%2!=0) {
+				return false;
+			}
+			return true;
+		}
+		
+		public void crear() throws MalformedURLException {//metodo que uso para dar el primer formato a los botones segun lo que ya se tiene en editar
+			for(int x=0;x<8;x++) {
+				for(int y=0;y<8;y++) {
+					editar(Base[x][y],x,y);
+					add(Base[x][y]);
+				}
+			}
+			
+		}
+		 
+		public void Activar() { //sin comprobar, supuesto debe activar la primera fila atraves de el atributo de las fichas
+			Ficha[][] fich=t.GetFichas();
+			for(int x=0;x<7;x++) {
+				for(int y=0;y<7;y++) {
+					if(fich[x][y].isMover()) {
+						Base[x][y].setEnabled(true);
+					}
+				}
+			}
+				}
+			
+		}
+		
+		
+		
